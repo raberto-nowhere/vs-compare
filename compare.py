@@ -3,7 +3,7 @@ import vapoursynth as vs
 core = vs.get_core()
 
 SOURCE = 'source.mkv'
-ENCODE = 'encod.mkv'
+ENCODE = 'encode.mkv'
 
 def remux():
   return core.ffms2.Source(SOURCE)
