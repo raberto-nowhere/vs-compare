@@ -32,10 +32,6 @@ def write_text(clip, name):
   clip = core.text.FrameNum(clip, alignment=8)
   return core.text.FrameProps(clip, ["_PictType"])
 
-# Original method by someusername
-def final_source_old():
-  return select_frames(fill_border(crop(remux(), t=20, b=20), t=1, b=1))
-
 # Return source with cropped black bars
 def SelectAndCropSource(top=0, bottom=0):
   return select_frames(fill_border(crop(remux(), t = top, b = bottom), t=1, b=1))
