@@ -34,8 +34,8 @@ def final_source_old():
 def final_source_new(top, bottom):
   return select_frames(fill_border(crop(remux(), t = top, b = bottom), t=1, b=1))
 
-def final_encode():
-  return select_frames(fill_border(encode()))
+def final_source_way_new(top, bottom):
+  return remux()
   
 def compare():
   clips = []
@@ -64,7 +64,7 @@ def compare():
 
   return core.std.Interleave(clips, mismatch=True)
 
-def comparet():
+def PreFinalRangeComparison():
   clips = []
   
   r = final_source_new(0, 0)
@@ -79,5 +79,20 @@ def comparet():
   
   return core.std.Interleave(clips, mismatch=True)
   
-output = comparet()
+def FinalRangeComparison():
+  clips = []
+  
+  r = final_source_way_new(0, 0)
+  #r = crop(r, t=2, b=2)
+  r = write_text(r, 'SOURCE')
+  clips.append(r)
+  
+  clip = encode()
+  #clip = crop(clip, t=20, b=20)
+  clip = write_text(clip, 'ENCODE @ crf18.5')
+  clips.append(clip)
+  
+  return core.std.Interleave(clips, mismatch=True)
+  
+output = FinalRangeComparison()
 output.set_output()
