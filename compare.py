@@ -1,12 +1,25 @@
+# Usage:
+#   Set SOURCE and ENCODE variables and call either FinalRangeComparison()
+#   or PreFinalRangeComparison()
+#   FinalRangeComparison()   : Compare final encode against source
+#   PreFinalRangeComparison(): Compare test encode against source
+#            output = FinalRangeComparison()
+#            output = PreFinalRangeComparison()
+#            output.set_output()
+#
+# Thanks to someusername for this script
+
 import vapoursynth as vs
 
 core = vs.get_core()
 
 SOURCE = 'source.mkv'
 ENCODE = 'encode.mkv'
+SOURCETEXT = 'SOURCE'
+ENCODETEXT = 'ENCODE @ crfx'
 
 # Return the source's video frames
-def remux():
+def source():
   return core.ffms2.Source(SOURCE)
 
 # Return the encode's video frames
@@ -34,7 +47,7 @@ def write_text(clip, name):
 
 # Return source with cropped black bars
 def SelectAndCropSource(top=0, bottom=0):
-  return select_frames(fill_border(crop(remux(), t = top, b = bottom), t=1, b=1))
+  return select_frames(fill_border(crop(source(), t = top, b = bottom), t=1, b=1))
 
 # Compare two sets of frames when testing
 # Arguments (both optional)
@@ -44,11 +57,11 @@ def PreFinalRangeComparison(croptop=0, cropbottom=0):
   clips = []
   
   r = SelectAndCropSource(croptop, cropbottom)
-  r = write_text(r, 'SOURCE')
+  r = write_text(r, SOURCETEXT)
   clips.append(r)
   
   clip = encode()
-  clip = write_text(clip, 'ENCODE @ crf18.5')
+  clip = write_text(clip, ENCODETEXT)
   clips.append(clip)
   
   return core.std.Interleave(clips, mismatch=True)
@@ -60,13 +73,13 @@ def PreFinalRangeComparison(croptop=0, cropbottom=0):
 def FinalRangeComparison(croptop=0, cropbottom=0):
   clips = []
 
-  r = remux()
+  r = source()
   r = crop(r, t=croptop, b=cropbottom)
-  r = write_text(r, 'SOURCE')
+  r = write_text(r, SOURCETEXT)
   clips.append(r)
   
   clip = encode()
-  clip = write_text(clip, 'ENCODE @ crf18.5')
+  clip = write_text(clip, ENCODETEXT)
   clips.append(clip)
   
   return core.std.Interleave(clips, mismatch=True)
