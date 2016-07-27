@@ -49,40 +49,39 @@ def write_text(clip, name):
 def SelectAndCropSource(top=0, bottom=0):
   return select_frames(fill_border(crop(source(), t = top, b = bottom), t=1, b=1))
 
-# Compare two sets of frames when testing
+# Compare the source and encode!
+# Arguments:
+#  s = source
+#  e = encode
+#  croptop = crop black bars from top of source frame
+#  cropbottom = crop black bars from bottom of source frame
+def Compare(s, e, croptop, cropbottom):
+  clips = []
+
+  s = write_text(s, SOURCETEXT)
+  clips.append(s)
+
+  e = write_text(e, ENCODETEXT)
+  clips.append(e)
+
+  return core.std.Interleave(clips, mismatch=True)
+
+# Calls Compare() on two sets of frames (test encode and source) when testing
 # Arguments (both optional)
 #   croptop: crop black bars from top of source frame
 #   cropbottom: crop black bars from bottom of source frame
 def PreFinalRangeComparison(croptop=0, cropbottom=0):
-  clips = []
-  
-  r = SelectAndCropSource(croptop, cropbottom)
-  r = write_text(r, SOURCETEXT)
-  clips.append(r)
-  
-  clip = encode()
-  clip = write_text(clip, ENCODETEXT)
-  clips.append(clip)
-  
-  return core.std.Interleave(clips, mismatch=True)
+  s = SelectAndCropSource(croptop, cropbottom)
+  return Compare(s, encode(), croptop, cropbottom)
 
-# Compare two sets of frames after the final encode is done
+# Calls Compare() two sets of frames after the final encode is done
 # Arguments (both optional)
 #   croptop: crop black bars from top of source frame
 #   cropbottom: crop black bars from bottom of source frame
 def FinalRangeComparison(croptop=0, cropbottom=0):
-  clips = []
+  s = source()
+  s = crop(s, t=croptop, b=cropbottom)
+  return Compare(s, encode(), croptop, cropbottom)
 
-  r = source()
-  r = crop(r, t=croptop, b=cropbottom)
-  r = write_text(r, SOURCETEXT)
-  clips.append(r)
-  
-  clip = encode()
-  clip = write_text(clip, ENCODETEXT)
-  clips.append(clip)
-  
-  return core.std.Interleave(clips, mismatch=True)
-  
-output = FinalRangeComparison()
+output = PreFinalRangeComparison()
 output.set_output()
