@@ -7,13 +7,13 @@
 #            output = PreFinalRangeComparison()
 #            output.set_output()
 #
-# Thanks to someusername for this script
+# Thanks to someusername for the original script
 
 import vapoursynth as vs
 
 core = vs.get_core()
 
-SOURCE = 'source.mkv'
+SOURCE = 'lol.mp4'
 ENCODE = 'encode.mkv'
 SOURCETEXT = 'SOURCE'
 ENCODETEXT = 'ENCODE @ crfx'
@@ -41,7 +41,7 @@ def select_frames(clip):
 
 # Write Info to frames
 def write_text(clip, name):
-  clip = core.text.Text(clip, text = name, alignment=1)
+  clip = core.text.Text(clip, text = name, alignment=9)
   clip = core.text.FrameNum(clip, alignment=8)
   return core.text.FrameProps(clip, ["_PictType"])
 
@@ -83,5 +83,15 @@ def FinalRangeComparison(croptop=0, cropbottom=0):
   s = crop(s, t=croptop, b=cropbottom)
   return Compare(s, encode(), croptop, cropbottom)
 
-output = PreFinalRangeComparison()
+# Not a comparison, just to view frames
+# Arguments (both optional)
+#   croptop: crop black bars from top of source frame
+#   cropbottom: crop black bars from bottom of source frame
+def ViewFrames(croptop=0, cropbottom=0):
+  clips = []
+  v = write_text(source(), SOURCETEXT)
+  clips.append(v)
+  return v
+
+output = ViewFrames()
 output.set_output()
