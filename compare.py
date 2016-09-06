@@ -13,7 +13,7 @@ import vapoursynth as vs
 
 core = vs.get_core()
 
-SOURCE = 'lol.mp4'
+SOURCE = 'source.mkv'
 ENCODE = 'encode.mkv'
 SOURCETEXT = 'SOURCE'
 ENCODETEXT = 'ENCODE @ crfx'
